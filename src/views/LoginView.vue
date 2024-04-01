@@ -16,7 +16,7 @@
 
     <p>
       Don't have an account?
-      <NuxtLink class="underline text-lime-600" to="/register">Register now!</NuxtLink>
+      <router-link class="underline text-lime-600" to="/register">Register now!</router-link>
     </p>
   </div>
 </template>
