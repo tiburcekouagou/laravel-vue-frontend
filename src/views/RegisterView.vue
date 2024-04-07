@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { axiosInstancePromise } from '@/axios'
+import { getAxiosInstance } from '@/axios'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 interface RegisterPayload {
   name: string
   email: string
@@ -17,9 +19,14 @@ const form = ref<RegisterPayload>({
 })
 
 async function register(payload: RegisterPayload) {
-  const axiosClient = await axiosInstancePromise
+  const axiosClient = await getAxiosInstance()
   const res = await axiosClient.post('/register', payload)
   console.log(res)
+  await axiosClient.post('/login', {
+    email: form.value.email,
+    passowrd: form.value.password
+  })
+  router.replace({ name: 'me' })
 }
 </script>
 <template>
