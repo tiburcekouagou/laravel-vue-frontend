@@ -26,12 +26,12 @@ async function login(form: LoginPayload) {
     <form @submit.prevent="login(form)">
       <label>
         <div>Email</div>
-        <input type="text" />
+        <input type="text" v-model="form.email" />
       </label>
 
       <label>
         <div>Password</div>
-        <input type="password" />
+        <input type="password" v-model="form.password" />
       </label>
       <button class="btn">Login</button>
     </form>
