@@ -1,23 +1,12 @@
 <script setup lang="ts">
-import { getAxiosInstance } from '@/axios'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-interface LoginPayload {
-  email: string
-  password: string
-}
+import { useAuth } from '@/composables/useAuth'
 
-const router = useRouter()
-const form = ref<LoginPayload>({
+const form = ref({
   email: '',
   password: ''
 })
-
-async function login(form: LoginPayload) {
-  const axiosClient = await getAxiosInstance()
-  await axiosClient.post('/login', form)
-  router.replace({ name: 'me' })
-}
+const { login } = useAuth()
 </script>
 
 <template>

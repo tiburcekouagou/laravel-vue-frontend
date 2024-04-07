@@ -8,3 +8,15 @@ export interface AppUser {
   two_factor_secret: null | string
   two_factor_recovery_codes: null | string
 }
+
+export interface LoginPayload {
+  email: string
+  password: string
+}
+
+export interface RegisterPayload {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+}
