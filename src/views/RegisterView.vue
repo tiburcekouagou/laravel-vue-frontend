@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axiosClient from '@/axios'
+import { axiosInstancePromise } from '@/axios'
 import { ref } from 'vue'
 
 interface RegisterPayload {
@@ -16,15 +16,10 @@ const form = ref<RegisterPayload>({
   password_confirmation: ''
 })
 
-function register(payload: RegisterPayload) {
-  axiosClient
-    .get('/sanctum/csrf-cookie', {
-      baseURL: 'http://localhost:8000'
-    })
-    .then(async (response) => {
-      const res = await axiosClient.post('/register', payload)
-      console.log(res)
-    })
+async function register(payload: RegisterPayload) {
+  const axiosClient = await axiosInstancePromise
+  const res = await axiosClient.post('/register', payload)
+  console.log(res)
 }
 </script>
 <template>
