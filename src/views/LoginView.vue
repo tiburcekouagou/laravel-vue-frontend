@@ -12,17 +12,21 @@ const { login } = useAuth()
 <template>
   <div class="login">
     <h1>Login</h1>
-    <form @submit.prevent="login(form)">
+    <form @submit.prevent="login(form)" class="space-y-2">
       <label>
         <div>Email</div>
-        <input type="text" v-model="form.email" />
+        <input class="p-2 outline-none border block w-full" type="text" v-model="form.email" />
       </label>
 
       <label>
         <div>Password</div>
-        <input type="password" v-model="form.password" />
+        <input
+          class="p-2 outline-none border block w-full"
+          type="password"
+          v-model="form.password"
+        />
       </label>
-      <button class="btn">Login</button>
+      <button class="px-2 py-1 text-white bg-gray-700 rounded-md">Login</button>
     </form>
 
     <p>
@@ -31,3 +35,5 @@ const { login } = useAuth()
     </p>
   </div>
 </template>
+
+<style scoped></style>

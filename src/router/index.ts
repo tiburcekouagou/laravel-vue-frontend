@@ -1,5 +1,4 @@
-import { getAxiosInstance } from '@/axios'
-import { AxiosError } from 'axios'
+import { useAuth } from '@/composables/useAuth'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -34,31 +33,31 @@ const router = createRouter({
           meta: { requiresAuth: true }
         },
         {
-          path: '/me',
+          path: 'me',
           name: 'me',
           component: () => import('@/views/MeView.vue'),
           meta: { requiresAuth: true }
         },
         {
-          path: '/links',
+          path: 'links',
           name: 'links',
           component: () => import('@/views/links/IndexView.vue'),
           meta: { requiresAuth: true }
         },
         {
-          path: '/links/create',
+          path: 'links/create',
           name: 'links.create',
           component: () => import('@/views/links/CreateView.vue'),
           meta: { requiresAuth: true }
         },
         {
-          path: '/links/:id',
+          path: 'links/:id',
           name: 'links.show',
           component: () => import('@/views/links/ShowView.vue'),
           meta: { requiresAuth: true }
         },
         {
-          path: '/logout',
+          path: 'logout',
           name: 'logout',
           component: () => import('@/views/LogoutView.vue'),
           meta: { requiresAuth: true }
@@ -77,18 +76,12 @@ declare module 'vue-router' {
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
-    let canLogin = false
-    try {
-      const axiosClient = await getAxiosInstance()
-      const resp = await axiosClient.get('/user')
-      canLogin = true
-    } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        canLogin = false
-      }
-    } finally {
-      if (canLogin) next()
-      else next({ name: 'login' })
+    const { user, initUser } = useAuth()
+    await initUser()
+    if (!user.value) {
+      next({ name: 'login' })
+    } else {
+      next()
     }
   } else next()
 })

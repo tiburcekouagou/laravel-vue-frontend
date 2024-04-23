@@ -1,16 +1,7 @@
 <script setup lang="ts">
-import { getAxiosInstance } from '@/axios'
-import type { AxiosInstance } from 'axios'
-import { onMounted, ref } from 'vue'
-import type { AppUser } from '@/types/index'
+import { useAuth } from '@/composables/useAuth';
 
-let axiosClient: AxiosInstance
-let user = ref<AppUser>()
-
-onMounted(async function () {
-  axiosClient = await getAxiosInstance()
-  user.value = (await axiosClient.get('/user')).data
-})
+const {user} = useAuth();
 </script>
 
 <template>

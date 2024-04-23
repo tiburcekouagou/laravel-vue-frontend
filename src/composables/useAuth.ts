@@ -1,22 +1,37 @@
 import { getAxiosInstance } from '@/axios'
-import type { LoginPayload, RegisterPayload } from '@/types'
-import { toValue } from 'vue'
+import type { AppUser, LoginPayload, RegisterPayload } from '@/types'
+import type { AxiosError } from 'axios'
+import { ref, toValue } from 'vue'
 import { useRouter } from 'vue-router'
 
 export const useAuth = () => {
+  const user = ref<AppUser | null>(null)
   const router = useRouter()
-  // user
-  // name -> string
-  // email -> string
-  // created_at -> Date
-  // updated_at -> Date
-  // login
+
+  async function getUser(): Promise<AppUser | null> {
+    if (user.value) return user.value
+    try {
+      const axiosClient = await getAxiosInstance()
+      const res = await axiosClient.get('/user')
+      const user = res.data
+
+      return {
+        ...user
+      }
+    } catch (err: any) {
+      return null
+    }
+  }
+
+  async function initUser() {
+    user.value = await getUser()
+  }
 
   async function login(form: LoginPayload) {
     form = toValue(form)
     const axiosClient = await getAxiosInstance()
     await axiosClient.post('/login', form)
-    router.replace({ name: 'me' })
+    router.push({ name: 'me' })
   }
   // logout
   async function logout() {
@@ -40,6 +55,8 @@ export const useAuth = () => {
   return {
     login,
     register,
-    logout
+    logout,
+    initUser,
+    user
   }
 }
