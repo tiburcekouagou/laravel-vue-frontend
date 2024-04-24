@@ -37,6 +37,7 @@ export const useAuth = () => {
   async function logout() {
     const axiosClient = await getAxiosInstance()
     await axiosClient.post('/logout')
+    user.value = null
     router.push({ name: 'login', replace: true})
   }
   // register
