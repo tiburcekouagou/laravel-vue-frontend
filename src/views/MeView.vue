@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { useAuth } from '@/composables/useAuth';
-import { useRouter } from 'vue-router';
+import { useAuth } from '@/composables/useAuth'
+import { useRouter } from 'vue-router'
 const router = useRouter()
 
-  const {user} = useAuth(router); // using user directly from useAuth
-
+const { user } = useAuth(router) // using user directly from useAuth
 </script>
 
 <template>

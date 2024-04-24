@@ -6,8 +6,8 @@ import { useRouter, type Router } from 'vue-router'
 const user = ref<AppUser | null>(null)
 
 export const useAuth = () => {
-  const router = useRouter();
-  
+  const router = useRouter()
+
   async function getUser(): Promise<AppUser | null> {
     if (user.value) return user.value
     try {
@@ -38,7 +38,7 @@ export const useAuth = () => {
     const axiosClient = await getAxiosInstance()
     await axiosClient.post('/logout')
     user.value = null
-    router.push({ name: 'login', replace: true})
+    router.push({ name: 'login', replace: true })
   }
   // register
 

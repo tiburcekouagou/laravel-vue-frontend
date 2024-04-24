@@ -18,14 +18,17 @@ async function initAxios(): Promise<AxiosInstance> {
   // intercept all 401 or 419 response codes
   // that can be returned by sanctum when session expires
 
-  axiosClient.interceptors.response.use((response) => response, (error: AxiosError) => {
-    if ([401, 419].includes(error.response?.status as number)) {
-  const {logout} = useAuth(useRouter());
-      logout();
-    } else {
-      return Promise.reject(error);
+  axiosClient.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError) => {
+      if ([401, 419].includes(error.response?.status as number)) {
+        const { logout } = useAuth(useRouter())
+        logout()
+      } else {
+        return Promise.reject(error)
+      }
     }
-  });
+  )
 
   await axiosClient.get('/sanctum/csrf-cookie', {
     baseURL: url

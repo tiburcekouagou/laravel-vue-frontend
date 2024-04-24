@@ -1,5 +1,5 @@
 import { useAuth } from '@/composables/useAuth'
-import { createRouter, createWebHistory, useRouter } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,8 +52,8 @@ const router = createRouter({
         },
         {
           path: 'links/:id',
-          name: 'links.show',
-          component: () => import('@/views/links/ShowView.vue'),
+          name: 'links.update',
+          component: () => import('@/views/links/UpdateView.vue'),
           meta: { requiresAuth: true }
         },
         {
