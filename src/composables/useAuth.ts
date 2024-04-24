@@ -1,14 +1,13 @@
 import { getAxiosInstance } from '@/axios'
 import type { AppUser, LoginPayload, RegisterPayload } from '@/types'
-import type { AxiosError } from 'axios'
 import { ref, toValue } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 
 const user = ref<AppUser | null>(null)
-const router = useRouter()
 
 export const useAuth = () => {
-
+  const router = useRouter();
+  
   async function getUser(): Promise<AppUser | null> {
     if (user.value) return user.value
     try {
@@ -26,7 +25,6 @@ export const useAuth = () => {
 
   async function initUser() {
     user.value = await getUser()
-    console.log("from db", user.value)
   }
 
   async function login(form: LoginPayload) {
@@ -39,7 +37,7 @@ export const useAuth = () => {
   async function logout() {
     const axiosClient = await getAxiosInstance()
     await axiosClient.post('/logout')
-    router.replace({ name: 'login' })
+    router.push({ name: 'login', replace: true})
   }
   // register
 
@@ -47,12 +45,11 @@ export const useAuth = () => {
     payload = toValue(payload)
     const axiosClient = await getAxiosInstance()
     const res = await axiosClient.post('/register', payload)
-    console.log(res)
     await axiosClient.post('/login', {
       email: payload.email,
       passowrd: payload.password
     })
-    router.replace({ name: 'me' })
+    router.push({ name: 'me', replace: true })
   }
   return {
     login,

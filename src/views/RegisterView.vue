@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
 
 const form = ref({
   name: '',
@@ -8,7 +9,9 @@ const form = ref({
   password: '',
   password_confirmation: ''
 })
-const { register } = useAuth()
+const router = useRouter()
+
+const { register } = useAuth(router)
 </script>
 <template>
   <div class="register">

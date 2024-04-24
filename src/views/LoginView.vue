@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuth } from '@/composables/useAuth'
+import { useRouter } from 'vue-router';
 
 const form = ref({
   email: '',
   password: ''
 })
-const { login } = useAuth()
+const router = useRouter()
+const { login } = useAuth(router)
 </script>
 
 <template>

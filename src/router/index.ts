@@ -1,5 +1,5 @@
 import { useAuth } from '@/composables/useAuth'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, useRouter } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,7 +78,6 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
     const { user, initUser } = useAuth()
     await initUser()
-    console.log("after init", user.value);
     if (!user.value) {
       next({ name: 'login' })
     } else {
