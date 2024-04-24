@@ -4,9 +4,10 @@ import type { AxiosError } from 'axios'
 import { ref, toValue } from 'vue'
 import { useRouter } from 'vue-router'
 
+const user = ref<AppUser | null>(null)
+const router = useRouter()
+
 export const useAuth = () => {
-  const user = ref<AppUser | null>(null)
-  const router = useRouter()
 
   async function getUser(): Promise<AppUser | null> {
     if (user.value) return user.value
@@ -25,6 +26,7 @@ export const useAuth = () => {
 
   async function initUser() {
     user.value = await getUser()
+    console.log("from db", user.value)
   }
 
   async function login(form: LoginPayload) {

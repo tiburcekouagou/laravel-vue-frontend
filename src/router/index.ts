@@ -78,6 +78,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
     const { user, initUser } = useAuth()
     await initUser()
+    console.log("after init", user.value);
     if (!user.value) {
       next({ name: 'login' })
     } else {
