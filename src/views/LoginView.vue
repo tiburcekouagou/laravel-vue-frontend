@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { useAuth } from '@/composables/useAuth'
-import { AxiosError } from 'axios'
 import type { LoginPayload } from '@/types'
 import type { FormKitNode } from '@formkit/core'
+import { handleInvalidForm } from '@/utils'
 
 const { login } = useAuth()
 async function handleLogin(payload: LoginPayload, node?: FormKitNode) {
   try {
     await login(payload)
   } catch (err: any) {
-    if (err instanceof AxiosError && err.response?.status === 422) {
-      node?.setErrors([], err.response.data.errors)
-    }
+    handleInvalidForm(err, node)
   }
 }
 </script>
