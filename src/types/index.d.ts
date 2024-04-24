@@ -22,7 +22,7 @@ export interface RegisterPayload {
 }
 
 export interface Link {
-  id: number;
+  id: number
   short_link: string
   full_link: string
   views: number

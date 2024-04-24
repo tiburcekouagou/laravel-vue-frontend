@@ -1,20 +1,47 @@
 <script setup lang="ts">
 import { getAxiosInstance } from '@/axios';
 import SearchInput from '@/components/SearchInput.vue'
-import type { Link } from '@/types';
-import type { AxiosResponse } from 'axios';
-import  { onMounted, ref } from 'vue';
+import type { Link, PaginatedResponse } from '@/types';
+import  { computed, onMounted, ref, watch } from 'vue';
 import { TailwindPagination } from 'laravel-vue-pagination';
+import type { AxiosResponse } from 'axios';
 
-const links  = ref<Link[]>([]);
-
-onMounted(async() => {
-  const axiosClient = await getAxiosInstance();
-  const {data} = await axiosClient.get<AxiosResponse<any>>("/links");
-  links.value = data.data;
+const page = ref(1)
+const linkData = ref<PaginatedResponse<Link>>({
+  current_page: 0,
+  data: [],
+  first_page_url: null,
+  from: 0,
+  last_page: 0,
+  last_page_url: null,
+  links: [],
+  next_page_url: null,
+  path: '',
+  per_page: 0,
+  prev_page_url: null,
+  to: 0,
+  total: 0
 })
 
-// const links = 
+
+watch(page, () => {
+  getLinks();
+})
+
+const getLinks = async () => {
+  const axiosClient = await getAxiosInstance();
+  const {data: res} = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${page.value}`);
+  linkData.value = res;
+}
+
+let links = computed<Link[]>(() => [])
+
+onMounted(() => {
+  getLinks();
+  links  = computed(() => linkData.value.data)
+
+})
+
 </script>
 <template>
   <div>
@@ -64,7 +91,7 @@ onMounted(async() => {
           </tr>
         </tbody>
       </table>
-      <TailwindPagination :data="links" />
+      <TailwindPagination :data="linkData" @pagination-change-page="page = $event" />
       <div class="mt-5 flex justify-center"></div>
     </div>
 

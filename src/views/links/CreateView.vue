@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { getAxiosInstance } from '@/axios';
+import { getAxiosInstance } from '@/axios'
 import GoBack from '@/components/GoBack.vue'
-import { handleInvalidForm } from '@/utils';
-import type {FormKitNode} from '@formkit/core'
-import {nanoid} from 'nanoid'
+import { handleInvalidForm } from '@/utils'
+import type { FormKitNode } from '@formkit/core'
+import { nanoid } from 'nanoid'
 interface Payload {
-  full_link: string;
+  full_link: string
 }
 
-async function createLink(payload: Payload, node?: FormKitNode ): Promise<void> {
+async function createLink(payload: Payload, node?: FormKitNode): Promise<void> {
   try {
-    const axiosClient = await getAxiosInstance();
+    const axiosClient = await getAxiosInstance()
     axiosClient.post('/links', {
       ...payload,
       short_link: nanoid(8)
