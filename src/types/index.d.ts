@@ -22,9 +22,11 @@ export interface RegisterPayload {
 }
 
 export interface Link {
+  id: number;
   short_link: string
   full_link: string
   views: number
+  user_id: number
   created_at: Date
   updated_at: Date
 }

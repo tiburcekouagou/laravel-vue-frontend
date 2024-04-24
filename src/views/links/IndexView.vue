@@ -1,26 +1,20 @@
 <script setup lang="ts">
+import { getAxiosInstance } from '@/axios';
 import SearchInput from '@/components/SearchInput.vue'
+import type { Link } from '@/types';
+import type { AxiosResponse } from 'axios';
+import  { onMounted, ref } from 'vue';
+import { TailwindPagination } from 'laravel-vue-pagination';
 
-const links = [
-  {
-    short_link: '234jlsfsf',
-    full_link: 'https://vueschool.io',
-    views: 3,
-    id: 1
-  },
-  {
-    short_link: 'adfaowerw',
-    full_link: 'https://google.com',
-    views: 1,
-    id: 2
-  },
-  {
-    short_link: '234sfdjaip',
-    full_link: 'https://vuejsnation.com/',
-    views: 0,
-    id: 3
-  }
-]
+const links  = ref<Link[]>([]);
+
+onMounted(async() => {
+  const axiosClient = await getAxiosInstance();
+  const {data} = await axiosClient.get<AxiosResponse<any>>("/links");
+  links.value = data.data;
+})
+
+// const links = 
 </script>
 <template>
   <div>
@@ -33,7 +27,6 @@ const links = [
         </router-link>
       </div>
     </nav>
-
     <div v-if="true">
       <table class="table-fixed w-full">
         <thead>
@@ -49,7 +42,7 @@ const links = [
           </tr>
         </thead>
         <tbody>
-          <tr v-for="link in links">
+          <tr v-for="(link, i) in links" :key="i">
             <td>
               <a :href="link.full_link" target="_blank">
                 {{ link.full_link.replace(/^http(s?):\/\//, '') }}</a
@@ -71,6 +64,7 @@ const links = [
           </tr>
         </tbody>
       </table>
+      <TailwindPagination :data="links" />
       <div class="mt-5 flex justify-center"></div>
     </div>
 
