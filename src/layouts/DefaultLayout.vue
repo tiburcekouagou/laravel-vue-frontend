@@ -5,7 +5,12 @@ import TheMainNav from '@/components/TheMainNav.vue'
   <div>
     <TheMainNav />
     <div class="p-10">
-      <router-view></router-view>
+      <Suspense>
+        <router-view></router-view>
+        <template #fallback>
+          Loading...
+        </template>
+      </Suspense>
     </div>
   </div>
 </template>

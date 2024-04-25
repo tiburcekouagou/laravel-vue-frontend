@@ -1,6 +1,5 @@
 import axios, { AxiosError, type AxiosInstance } from 'axios'
 import { useAuth } from './composables/useAuth'
-import { useRouter } from 'vue-router'
 
 let initializedAxiosInstance: AxiosInstance | null = null
 
@@ -22,7 +21,7 @@ async function initAxios(): Promise<AxiosInstance> {
     (response) => response,
     (error: AxiosError) => {
       if ([401, 419].includes(error.response?.status as number)) {
-        const { logout } = useAuth(useRouter())
+        const { logout } = useAuth()
         logout()
       } else {
         return Promise.reject(error)
