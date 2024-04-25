@@ -6,21 +6,29 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { TailwindPagination } from 'laravel-vue-pagination'
 import { useRoute, useRouter } from 'vue-router'
 
+type Query = {page: number; "filter[full_link]": string;}
+
 const router = useRouter();
 const route = useRoute();
 
 const linkData = ref<PaginatedResponse<Link> | {}>({})
-  const page = ref(route.query.page || 1)
-
+const queries = ref<Query>({
+  page: 1,
+  "filter[full_link]": "",
+  ...route.query
+})
   
-watch(page, () => {
+watch(queries.value, () => {
+  console.log("watch" + (new Date()).getMilliseconds())
   getLinks()
-  router.push({ query: { page: page.value } })
+  router.push({ query: queries.value }),
+  {deep: true}
 })
 
 const getLinks = async () => {
+  const qs = new URLSearchParams({...queries.value, page: queries.value.page.toString()}).toString()
   const axiosClient = await getAxiosInstance()
-  const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${page.value}`)
+  const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${qs}`)
   linkData.value = res
 }
 
@@ -36,7 +44,7 @@ onMounted(() => {
     <nav class="flex justify-between mb-4 items-center">
       <h1 class="mb-0">My Links</h1>
       <div class="flex items-center">
-        <SearchInput modelValue="" />
+        <SearchInput v-model="queries['filter[full_link]']" />
         <router-link to="/links/create" class="ml-4">
           <span class="pi pi-plus"></span> Create New
         </router-link>
@@ -79,7 +87,7 @@ onMounted(() => {
           </tr>
         </tbody>
       </table>
-      <TailwindPagination :data="linkData" @pagination-change-page="page = $event" />
+      <TailwindPagination :data="linkData" @pagination-change-page="queries.page = $event" />
       <div class="mt-5 flex justify-center"></div>
     </div>
 

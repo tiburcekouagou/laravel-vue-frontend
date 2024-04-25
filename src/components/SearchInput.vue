@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps({
+const props = defineProps({
   modelValue: { type: String, required: true }
 })
 
@@ -16,7 +16,7 @@ defineEmits<{
       placeholder="Search"
       class="pl-10 p-2 rounded"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-      :value="modelValue"
+      :value="props.modelValue"
     />
   </div>
 </template>
