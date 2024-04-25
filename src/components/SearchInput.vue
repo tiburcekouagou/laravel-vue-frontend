@@ -1,11 +1,23 @@
 <script setup lang="ts">
+import { refDebounced } from '@vueuse/core';
+import { ref, watch } from 'vue';
+
 const props = defineProps({
   modelValue: { type: String, required: true }
 })
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:modelValue', payload: string): void
 }>()
+
+const localValue = ref(props.modelValue);
+const debouncedLocalValue = refDebounced(localValue, 500)
+
+
+watch(debouncedLocalValue, () => {
+  console.log("watch", (new Date()).getMilliseconds())
+  emit('update:modelValue', localValue.value)
+})
 </script>
 <template>
   <div class="relative">
@@ -15,8 +27,7 @@ defineEmits<{
       type="text"
       placeholder="Search"
       class="pl-10 p-2 rounded"
-      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-      :value="props.modelValue"
+      v-model="localValue"
     />
   </div>
 </template>
