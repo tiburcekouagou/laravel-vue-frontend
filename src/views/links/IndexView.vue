@@ -7,7 +7,7 @@ import { TailwindPagination } from 'laravel-vue-pagination'
 import { useRoute, useRouter } from 'vue-router'
 import TableTh from '@/components/TableTh.vue'
 
-type Query = { page: number; 'filter[full_link]': string, sort: "" }
+type Query = { page: number; 'filter[full_link]': string; sort: '' }
 
 const router = useRouter()
 const route = useRoute()
@@ -15,24 +15,25 @@ const route = useRoute()
 const linkData = ref<PaginatedResponse<Link> | {}>({})
 const queries = ref<Query>({
   page: 1,
-  sort: "",
+  sort: '',
   'filter[full_link]': '',
   ...route.query
 })
 
 watch(queries.value, () => {
-  console.log('watch' + new Date().getMilliseconds())
   getLinks()
   router.push({ query: queries.value }), { deep: true }
 })
 
 const getLinks = async () => {
-  const qs = new URLSearchParams({
-    ...queries.value,
-    page: queries.value.page.toString()
-  }).toString()
+  // const qs = new URLSearchParams({
+  //   ...queries.value,
+  //   page: queries.value.page.toString()
+  // }).toString()
+  // @ts-expect-error page is a number and it is ok
+  const qs = new URLSearchParams(queries.value).toString()
   const axiosClient = await getAxiosInstance()
-  const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${qs}`)
+  const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?${qs}`)
   linkData.value = res
 }
 
@@ -64,7 +65,9 @@ onMounted(() => {
             <th class="w-[10%]">Edit</th>
             <th class="w-[10%]">Trash</th>
             <th class="w-[6%] text-center">
-              <button><span class="pi pi-sync w-[15px] relative top-[2px]"></span></button>
+              <button @click="getLinks">
+                <span class="pi pi-sync w-[15px] relative top-[2px]"></span>
+              </button>
             </th>
           </tr>
         </thead>

@@ -18,7 +18,10 @@ const desc = computed(() => props.modelValue.startsWith('-'))
 </script>
 <template>
   <th>
-    <button class="flex items-center" @click="$emit('update:modelValue', desc ? withoutDash : withDash)">
+    <button
+      class="flex items-center"
+      @click="$emit('update:modelValue', desc ? withoutDash : withDash)"
+    >
       <slot />
       <button v-if="sorting && desc">
         <span class="pi pi-chevron-down inline w-[10px] ml-2"></span>
