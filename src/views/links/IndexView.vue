@@ -4,13 +4,11 @@ import SearchInput from '@/components/SearchInput.vue'
 import type { Link, PaginatedResponse } from '@/types'
 import { computed, onMounted, ref, watch } from 'vue'
 import { TailwindPagination } from 'laravel-vue-pagination'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
-const route = useRoute();
-
-const page = ref(route.query.page || 1)
+const page = ref(1)
 const linkData = ref<PaginatedResponse<Link> | {}>({})
+const router = useRouter();
 
   
 watch(page, () => {
