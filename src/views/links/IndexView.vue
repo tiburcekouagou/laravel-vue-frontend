@@ -5,28 +5,32 @@ import type { Link, PaginatedResponse } from '@/types'
 import { computed, onMounted, ref, watch } from 'vue'
 import { TailwindPagination } from 'laravel-vue-pagination'
 import { useRoute, useRouter } from 'vue-router'
+import TableTh from '@/components/TableTh.vue'
 
-type Query = {page: number; "filter[full_link]": string;}
+type Query = { page: number; 'filter[full_link]': string, sort: "" }
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 const linkData = ref<PaginatedResponse<Link> | {}>({})
 const queries = ref<Query>({
   page: 1,
-  "filter[full_link]": "",
+  sort: "",
+  'filter[full_link]': '',
   ...route.query
 })
-  
+
 watch(queries.value, () => {
-  console.log("watch" + (new Date()).getMilliseconds())
+  console.log('watch' + new Date().getMilliseconds())
   getLinks()
-  router.push({ query: queries.value }),
-  {deep: true}
+  router.push({ query: queries.value }), { deep: true }
 })
 
 const getLinks = async () => {
-  const qs = new URLSearchParams({...queries.value, page: queries.value.page.toString()}).toString()
+  const qs = new URLSearchParams({
+    ...queries.value,
+    page: queries.value.page.toString()
+  }).toString()
   const axiosClient = await getAxiosInstance()
   const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${qs}`)
   linkData.value = res
@@ -54,13 +58,13 @@ onMounted(() => {
       <table class="table-fixed w-full">
         <thead>
           <tr>
-            <th class="w-[35%]">Full Link</th>
-            <th class="w-[35%]">Short Link</th>
-            <th class="w-[10%]">Views</th>
+            <TableTh v-model="queries.sort" name="full_link" class="w-[29%]">Full Link</TableTh>
+            <TableTh v-model="queries.sort" name="short_link" class="w-[29%]">Short Link</TableTh>
+            <TableTh v-model="queries.sort" name="views" class="w-[16%]">Views</TableTh>
             <th class="w-[10%]">Edit</th>
             <th class="w-[10%]">Trash</th>
             <th class="w-[6%] text-center">
-              <button><span class="pi pi-sync"></span></button>
+              <button><span class="pi pi-sync w-[15px] relative top-[2px]"></span></button>
             </th>
           </tr>
         </thead>

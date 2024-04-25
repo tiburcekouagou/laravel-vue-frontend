@@ -55,4 +55,3 @@ export interface PaginatedResponse<T> {
   to: number
   total: number
 }
-
