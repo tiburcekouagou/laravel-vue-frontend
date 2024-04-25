@@ -1,47 +1,32 @@
 <script setup lang="ts">
-import { getAxiosInstance } from '@/axios';
+import { getAxiosInstance } from '@/axios'
 import SearchInput from '@/components/SearchInput.vue'
-import type { Link, PaginatedResponse } from '@/types';
-import  { computed, onMounted, ref, watch } from 'vue';
-import { TailwindPagination } from 'laravel-vue-pagination';
-import type { AxiosResponse } from 'axios';
+import type { Link, PaginatedResponse } from '@/types'
+import { computed, onMounted, ref, watch } from 'vue'
+import { TailwindPagination } from 'laravel-vue-pagination'
+import { useRouter } from 'vue-router'
 
 const page = ref(1)
-const linkData = ref<PaginatedResponse<Link>>({
-  current_page: 0,
-  data: [],
-  first_page_url: null,
-  from: 0,
-  last_page: 0,
-  last_page_url: null,
-  links: [],
-  next_page_url: null,
-  path: '',
-  per_page: 0,
-  prev_page_url: null,
-  to: 0,
-  total: 0
-})
-
+const linkData = ref<PaginatedResponse<Link> | {}>({})
+const router = useRouter();
 
 watch(page, () => {
-  getLinks();
+  getLinks()
+  router.push({ query: { page: page.value } })
 })
 
 const getLinks = async () => {
-  const axiosClient = await getAxiosInstance();
-  const {data: res} = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${page.value}`);
-  linkData.value = res;
+  const axiosClient = await getAxiosInstance()
+  const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?page=${page.value}`)
+  linkData.value = res
 }
 
 let links = computed<Link[]>(() => [])
 
 onMounted(() => {
-  getLinks();
-  links  = computed(() => linkData.value.data)
-
+  getLinks()
+  links = computed(() => (linkData.value ? (linkData.value as PaginatedResponse<Link>).data : []))
 })
-
 </script>
 <template>
   <div>
