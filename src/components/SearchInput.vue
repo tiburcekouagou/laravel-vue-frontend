@@ -14,7 +14,6 @@ const localValue = ref(props.modelValue)
 const debouncedLocalValue = refDebounced(localValue, 500)
 
 watch(debouncedLocalValue, () => {
-  console.log('watch', new Date().getMilliseconds())
   emit('update:modelValue', localValue.value)
 })
 </script>

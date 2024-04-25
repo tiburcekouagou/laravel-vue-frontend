@@ -7,9 +7,7 @@ import TheMainNav from '@/components/TheMainNav.vue'
     <div class="p-10">
       <Suspense>
         <router-view></router-view>
-        <template #fallback>
-          Loading...
-        </template>
+        <template #fallback> Loading... </template>
       </Suspense>
     </div>
   </div>

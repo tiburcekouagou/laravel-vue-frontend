@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { getAxiosInstance } from '@/axios'
 import SearchInput from '@/components/SearchInput.vue'
-import type { Link, PaginatedResponse } from '@/types'
 import { computed, onMounted, ref, watch } from 'vue'
 import { TailwindPagination } from 'laravel-vue-pagination'
 import { useRoute, useRouter } from 'vue-router'
 import TableTh from '@/components/TableTh.vue'
+import { useLinks } from '@/composables/useLinks'
+import type { Link, PaginatedResponse } from '@/types'
 
 type Query = { page: number; 'filter[full_link]': string; sort: '' }
 
 const router = useRouter()
 const route = useRoute()
-
-const linkData = ref<PaginatedResponse<Link> | {}>({})
 const queries = ref<Query>({
   page: 1,
   sort: '',
@@ -20,29 +18,24 @@ const queries = ref<Query>({
   ...route.query
 })
 
-watch(queries.value, () => {
-  getLinks()
+const { data, index: getLinks, destroy } = useLinks({queries})
+onMounted(async () => {
+  await getLinks()
+})
+
+watch(queries, async() => {
+  // await getLinks()
   router.push({ query: queries.value }), { deep: true }
 })
 
-const getLinks = async () => {
-  // const qs = new URLSearchParams({
-  //   ...queries.value,
-  //   page: queries.value.page.toString()
-  // }).toString()
-  // @ts-expect-error page is a number and it is ok
-  const qs = new URLSearchParams(queries.value).toString()
-  const axiosClient = await getAxiosInstance()
-  const { data: res } = await axiosClient.get<PaginatedResponse<Link>>(`/links?${qs}`)
-  linkData.value = res
+let links = computed(() => (data.value as PaginatedResponse<Link>)?.data)
+
+async function handleDelete(id: number) {
+  await destroy(id)
+  if ((data.value as PaginatedResponse<Link>)) {
+    (data.value as PaginatedResponse<Link>).data = (data.value as PaginatedResponse<Link>).data.filter((link) => link.id !== id)
+  }
 }
-
-let links = computed<Link[]>(() => [])
-
-onMounted(() => {
-  getLinks()
-  links = computed(() => (linkData.value ? (linkData.value as PaginatedResponse<Link>).data : []))
-})
 </script>
 <template>
   <div>
@@ -65,7 +58,7 @@ onMounted(() => {
             <th class="w-[10%]">Edit</th>
             <th class="w-[10%]">Trash</th>
             <th class="w-[6%] text-center">
-              <button @click="getLinks">
+              <button @click="getLinks()">
                 <span class="pi pi-sync w-[15px] relative top-[2px]"></span>
               </button>
             </th>
@@ -88,13 +81,13 @@ onMounted(() => {
               ></router-link>
             </td>
             <td>
-              <button><span class="pi pi-trash"></span></button>
+              <button><span class="pi pi-trash" @click="handleDelete(link.id)"></span></button>
             </td>
             <td></td>
           </tr>
         </tbody>
       </table>
-      <TailwindPagination :data="linkData" @pagination-change-page="queries.page = $event" />
+      <TailwindPagination :data="data" @pagination-change-page="queries.page = $event" />
       <div class="mt-5 flex justify-center"></div>
     </div>
 

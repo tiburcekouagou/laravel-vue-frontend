@@ -18,7 +18,7 @@ async function handleRegistration(payload: RegisterPayload, node?: FormKitNode) 
 <template>
   <div class="register">
     <h1>Register</h1>
-    <FormKit type="form" submit-label="Register" @submit.prevent="handleRegistration">
+    <FormKit type="form" submit-label="Register" @submit="handleRegistration">
       <FormKit label="Name" name="name" />
       <FormKit type="email" label="Email" name="email" />
       <FormKit type="password" label="Password" name="password" validation="required" />

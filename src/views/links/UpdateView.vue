@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import GoBack from '@/components/GoBack.vue'
-import { useLinks } from '@/composables/useLinks';
-import { useRoute, useRouter } from 'vue-router';
-import type {FormKitNode} from '@formkit/core'
-import type { Link } from '@/types';
-import { handleInvalidForm } from '@/utils';
+import { useLinks } from '@/composables/useLinks'
+import { useRoute, useRouter } from 'vue-router'
+import type { FormKitNode } from '@formkit/core'
+import type { Link } from '@/types'
+import { handleInvalidForm } from '@/utils'
 
-const route = useRoute();
-const router = useRouter();
-const {find, link, update} = useLinks();
-await find(Number (route.params.id))
+const route = useRoute()
+const router = useRouter()
+const { find, link, update } = useLinks()
+await find(Number(route.params.id))
 
 async function handleUpdate(payload: Partial<Link>, node?: FormKitNode) {
   try {
@@ -25,8 +25,8 @@ async function handleUpdate(payload: Partial<Link>, node?: FormKitNode) {
   <GoBack>or go back to links</GoBack>
   <div v-if="link">
     <FormKit type="form" submit-label="Update link" @submit="handleUpdate">
-    <FormKit type="text" name="short_link" label="Short Link" :value="link.short_link" />
-    <FormKit type="text" name="full_link" label="Full Link" :value="link.full_link" />
-  </FormKit>
+      <FormKit type="text" name="short_link" label="Short Link" :value="link.short_link" />
+      <FormKit type="text" name="full_link" label="Full Link" :value="link.full_link" />
+    </FormKit>
   </div>
 </template>
